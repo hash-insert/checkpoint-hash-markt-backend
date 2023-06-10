@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    favorites: {
+      type: [Number],
+      required: true,
+    },
+    cart_items: {
+      type: [Number],
+      required: true,
+    },
   },
   { timestamps: true }
 );

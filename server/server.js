@@ -5,15 +5,17 @@ require("dotenv/config");
 const app = express();
 
 // Routes
-const auth = require("./routes/auth");
+const authRouter = require("./routes/auth");
+const productsRouter = require("./routes/products");
 const { errorHandler } = require("./errors/errorHandler");
 
 // middlewares
 app.use(cors());
 app.use(express.json());
-app.use("/api/auth", auth);
+app.use("/api/auth", authRouter);
+app.use("/api", productsRouter);
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 // connect to DB and listen to server
 const port = process.env.PORT || 8190;

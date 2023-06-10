@@ -2,6 +2,7 @@ const { User } = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const { BadRequest } = require("../middlewares/customError");
 const signupSchema = Joi.object({
   name: Joi.string().required().min(3).max(30),
   email: Joi.string().required().email(),
@@ -16,12 +17,12 @@ const signup = async (req, res, next) => {
   try {
     const { error } = await signupSchema.validateAsync(req.body);
     if (error) {
-      return res.status(400).json({ error: error.details[0].message });
+      throw new BadRequest(error.details[0].message, 400);
     }
     const checkUser = await User.findOne({ email: email });
 
     if (checkUser) {
-      return res.json({ error: "email already exists" });
+      throw new BadRequest("Email already exists");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -35,9 +36,10 @@ const signup = async (req, res, next) => {
     const createUser = await User.create(newUser);
     return res.json(createUser);
   } catch (error) {
-    res.status(500).json({ error: `err in signup -> ${error}` });
+    next(error);
   }
 };
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 

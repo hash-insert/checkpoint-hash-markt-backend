@@ -6,10 +6,13 @@ class CustomError extends Error {
 }
 
 class BadRequest extends CustomError {
-  constructor(message) {
+  constructor(message, statusCode) {
     super(message);
-    this.statusCode = StatusCodes.BAD_REQUEST;
+    this.statusCode = statusCode;
   }
 }
+
+// let err = new BadRequest("error");
+// console.log(err);
 
 module.exports = { CustomError, BadRequest };
