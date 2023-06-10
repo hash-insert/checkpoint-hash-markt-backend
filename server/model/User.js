@@ -4,13 +4,21 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      trim: true, // remove space from end & an begining if have
+      trim: true,
       required: true,
-      maxlength: 35,
-    }
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
+const User = mongoose.model("User", userSchema);
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = { User };
