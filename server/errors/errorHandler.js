@@ -1,3 +1,4 @@
+const { StatusCodes } = require("http-status-codes");
 const { CustomError, BadRequest } = require("../middlewares/customError");
 
 const errorHandler = (error, req, res, next) => {
@@ -5,10 +6,12 @@ const errorHandler = (error, req, res, next) => {
     ` error in error handler -> ${error.message} ${error.statusCode}`
   );
 
-  if (error instanceof BadRequest) {
+  if (error instanceof CustomError) {
     res.status(error.statusCode).json({ error: error.message });
   } else {
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

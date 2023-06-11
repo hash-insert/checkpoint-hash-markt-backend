@@ -2,7 +2,11 @@ const { User } = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
-const { BadRequest } = require("../middlewares/customError");
+const {
+  BadRequest,
+  Forbidden,
+  UnAuthorized,
+} = require("../middlewares/customError");
 const signupSchema = Joi.object({
   name: Joi.string().required().min(3).max(30),
   email: Joi.string().required().email(),
@@ -15,14 +19,14 @@ const loginSchema = Joi.object({
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
-    const { error } = await signupSchema.validateAsync(req.body);
+    const { error } = signupSchema.validate(req.body);
     if (error) {
-      throw new BadRequest(error.details[0].message, 400);
+      throw new BadRequest(error.details[0].message);
     }
     const checkUser = await User.findOne({ email: email });
 
     if (checkUser) {
-      throw new BadRequest("Email already exists");
+      throw new Forbidden("Email already exists");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -36,27 +40,28 @@ const signup = async (req, res, next) => {
     const createUser = await User.create(newUser);
     return res.json(createUser);
   } catch (error) {
+    console.log(`error->${error}`);
     next(error);
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const { error } = await loginSchema.validateAsync(req.body);
+    const { error } = loginSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({ error: error.details[0].message });
+      throw new BadRequest(error.details[0].message);
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      throw new UnAuthorized("email not exists!");
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      throw new UnAuthorized("password not matching!!");
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -71,18 +76,18 @@ const login = async (req, res) => {
 
     return res.status(200).json({ message: "Logged in successfully" });
   } catch (error) {
-    res.status(500).json({ error: `Error in login: ${error}` });
+    next(error);
   }
 };
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
   try {
     res
       .clearCookie("access_token")
       .status(200)
       .json({ message: "Successfully logged out" });
   } catch (error) {
-    res.status(500).json({ error: `Error in logout: ${error}` });
+    next(error);
   }
 };
 module.exports = {

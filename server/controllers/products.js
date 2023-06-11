@@ -1,40 +1,39 @@
 const { Product } = require("../model/Product");
 
-const addMultipleProducts = async (req, res) => {
+const addMultipleProducts = async (req, res, next) => {
   try {
     let products = await Product.insertMany(req.body.data);
-    res.json({ msg: products });
+    res.status(201).json({ msg: products });
   } catch (error) {
-    res.json({ error: `error in addMultipleProducts->${error}` });
+    next(error);
   }
 };
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
   try {
     let products = await Product.find({});
     res.status(200).json({ data: products });
   } catch (error) {
-    res.json({ err: `error in getAllProducts -> ${error}` });
+    next(error);
   }
 };
 
-const getProduct = async (req, res) => {
+const getProduct = async (req, res, next) => {
   try {
     let product = await Product.findOne({ _id: req.params.id });
     res.status(200).json({ data: product });
   } catch (error) {
-    res.json({ err: `error in getProduct -> ${error}` });
+    next(error);
   }
 };
 
-const getProductByCategory = async (req, res) => {
+const getProductByCategory = async (req, res, next) => {
   const { category } = req.params;
-  console.log(category);
   try {
     let product = await Product.find({ category });
     res.status(200).json({ data: product });
   } catch (error) {
-    res.json({ err: `error in getProductByCategory -> ${error}` });
+    next(error);
   }
 };
 

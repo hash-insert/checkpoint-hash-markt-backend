@@ -4,15 +4,34 @@ class CustomError extends Error {
     super(message);
   }
 }
-
 class BadRequest extends CustomError {
-  constructor(message, statusCode) {
+  constructor(message) {
     super(message);
-    this.statusCode = statusCode;
+    this.statusCode = StatusCodes.BAD_REQUEST;
   }
 }
-
-// let err = new BadRequest("error");
-// console.log(err);
-
-module.exports = { CustomError, BadRequest };
+class Forbidden extends CustomError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.FORBIDDEN;
+  }
+}
+class UnAuthorized extends CustomError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.UNAUTHORIZED;
+  }
+}
+class InternalServerError extends CustomError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+  }
+}
+module.exports = {
+  CustomError,
+  BadRequest,
+  Forbidden,
+  UnAuthorized,
+  InternalServerError,
+};
