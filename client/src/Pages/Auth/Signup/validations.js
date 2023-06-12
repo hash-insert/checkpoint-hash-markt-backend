@@ -1,23 +1,21 @@
 
-const validations = (currentUser, users) => {
-  console.log(users)
-  const isUser = users.some((item) => item.email === currentUser.email)
+const validations = (currentUser) => {
+  // console.log(users)
+  // const isUser = users.some((item) => item.email === currentUser.email)
 
   let errors = {}
 
-  if (!currentUser.firstName) {
-    errors.firstName = "First name is required."
-  }
-  if (!currentUser.lastName) {
-    errors.lastName = "Last name is required."
+  if (!currentUser.name) {
+    errors.firstName = "Name is required."
   }
   if (!currentUser.email) {
     errors.email = "Email is required."
   } else if (!/\S+@\S+\.\S+/.test(currentUser.email)) {
     errors.email = "Email is invalid."
-  } else if (isUser) {
-    errors.email = "This email address is already being used!"
   }
+  // } else if (isUser) {
+  //   errors.email = "This email address is already being used!"
+  // }
   if (!currentUser.password) {
     errors.password = "Password is required."
   } else if (currentUser.password.length < 8) {

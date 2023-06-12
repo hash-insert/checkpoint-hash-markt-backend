@@ -13,25 +13,31 @@ const Signup = () => {
     loggedIn,
     errors,
     setErrors,
-    setIsSubmitting
+    setIsSubmitting,
+    signup,
   } = useAuth()
 
   const navigate = useNavigate()
-  
+
   useEffect(() => {
     loggedIn && navigate('/')
   }, [loggedIn])
 
   const handleSignUpFormChange = (e) => {
     setCurrentUser({ ...currentUser, [e.target.name]: e.target.value })
+    setErrors({});
   }
 
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault()
-    setErrors(validations(currentUser, users)) 
-    setIsSubmitting(true)
-    localStorage.setItem('user', JSON.stringify(currentUser))
-    localStorage.setItem('users', JSON.stringify(users))
+    const errors = validations(currentUser)
+    if (Object.keys(errors).length === 0) {
+      try {
+        await signup(currentUser.name, currentUser.email, currentUser.password)
+      } catch (error) {
+        console.error('Signup error:', error.message)
+      }
+    }
   }
 
   return (
@@ -47,35 +53,25 @@ const Signup = () => {
         >
           <div className={styles.inputGroup}>
             <div>
-            {errors.firstName && <span className={styles.error}>{errors.firstName}</span>}
-              <label className="sr-only">First Name</label>
-              <input
-                type="text"
-                className={styles.input}
-                onChange={handleSignUpFormChange}
-                value={currentUser.firstName}
-                name="firstName"
-                placeholder="First Name"
-              />
-              
-            </div>
+              {errors.name && <span className={styles.error}>{errors.name}</span>}
+              <label className="sr-only">Name</label>
+              {currentUser && (
+                <input
+                  type="text"
+                  className={styles.input}
+                  onChange={handleSignUpFormChange}
+                  value={currentUser.name}
+                  name="name"
+                  placeholder="Name"
+                />
+              )}
 
-            <div>
-            {errors.lastName && <span className={styles.error}>{errors.lastName}</span>}
-              <label className="sr-only">Last Name</label>
-              <input
-                type="text"
-                className={styles.input}
-                onChange={handleSignUpFormChange}
-                value={currentUser.lastName}
-                name="lastName"
-                placeholder="Last Name"
-              />
-              
+
             </div>
             <div>
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
+              {errors.email && <span className={styles.error}>{errors.email}</span>}
               <label className="sr-only">Email</label>
+              {currentUser && (
               <input
                 type="email"
                 className={styles.input}
@@ -84,11 +80,13 @@ const Signup = () => {
                 name="email"
                 placeholder="Email Address"
               />
-              
+              )}
+
             </div>
             <div>
-            {errors.password && <span className={styles.error}>{errors.password}</span>}
+              {errors.password && <span className={styles.error}>{errors.password}</span>}
               <label className="sr-only">Password</label>
+              {currentUser && (
               <input
                 type="Password"
                 className={styles.input}
@@ -97,11 +95,13 @@ const Signup = () => {
                 name="password"
                 placeholder="Password"
               />
-              
+              )}
+
             </div>
             <div>
-            {errors.passwordConfirm && <span className={styles.error}>{errors.passwordConfirm}</span>}
+              {errors.passwordConfirm && <span className={styles.error}>{errors.passwordConfirm}</span>}
               <label className="sr-only">Password Confirm</label>
+              {currentUser && (
               <input
                 type="Password"
                 className={styles.input}
@@ -110,7 +110,8 @@ const Signup = () => {
                 name="passwordConfirm"
                 placeholder="Password Confirm"
               />
-              
+              )}
+
             </div>
             <div className={styles.linkBox}>
               <div className={styles.linkDiv}>

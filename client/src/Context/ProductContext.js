@@ -1,68 +1,68 @@
-import axios from 'axios'
-import { createContext, useContext, useEffect, useState } from 'react'
-const ProductContext = createContext()
+import { createContext, useContext, useEffect, useState } from 'react';
+import { getCategories, getProductsByCategory, getAllProducts, getProductById } from '../services/productService';
 
+const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
-  const [productList, setProductList] = useState([])
-  const [categories, setCategories] = useState()
-  const [category, setCategory] = useState("/products")
-  const [productID, setProductID] = useState("")
-  const [product, setProduct] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [productList, setProductList] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState('');
+  const [productID, setProductID] = useState('');
+  const [product, setProduct] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true)
-    const getCategories = async () => {
-      
-      let categoriesData
-      await axios("https://fakestoreapi.com/products/categories").then(
-        (res) =>
-          (categoriesData = res.data.map((item) =>
-            item.replace(/^(.)|\s+(.)/g, (c) => c.toUpperCase())
-          ))
-      )
-      setCategories(categoriesData)
-    }
-    getCategories()
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    setLoading(true)
-    const getProductData = async () => {
-      
-      if (category && category.length > 0) {
-        await axios.get(
-          `https://fakestoreapi.com/products/category/${category}`
-        ).then((res) => {
-          setProductList(res.data)
-          setLoading(false)
-        })
-      } else {
-        await axios.get(`https://fakestoreapi.com/products`).then((res) => {
-          setProductList(res.data)
-          setCategory("")
-          setLoading(false)
-        })
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const categoriesData = await getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.log(error);
       }
-    }
-    getProductData()
-  }, [category])
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    setLoading(true)
-    const getProductDetail = async () => {   
-      
-       productID && productID.length > 0 && await axios.get(`https://fakestoreapi.com/products/${productID}`).then(
-        (res) => {
-          setProduct(res.data)
-          setLoading(false)
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        let productListData;
+        if (category && category.length > 0) {
+          productListData = await getProductsByCategory(category);
+        } else {
+          productListData = await getAllProducts();
+          setCategory('');
         }
-      )
-    }
-    getProductDetail()
-  }, [productID])
+        setProductList(productListData);
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [category]);
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        if (productID && productID.length > 0) {
+          const productData = await getProductById(productID);
+          setProduct(productData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [productID]);
 
   const values = {
     product,
@@ -72,11 +72,9 @@ export const ProductProvider = ({ children }) => {
     categories,
     setCategory,
     loading,
-  }
+  };
 
-  return (
-    <ProductContext.Provider value={values}>{children}</ProductContext.Provider>
-  )
-}
+  return <ProductContext.Provider value={values}>{children}</ProductContext.Provider>;
+};
 
-export const useProduct = () => useContext(ProductContext)
+export const useProduct = () => useContext(ProductContext);
