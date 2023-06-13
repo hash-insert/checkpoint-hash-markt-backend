@@ -8,7 +8,7 @@ const Signin = () => {
 
   const { currentUser, login, setCurrentUser, setIsSubmitting, loggedIn } = useAuth()
 
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("")
 
   const emailRef = useRef()

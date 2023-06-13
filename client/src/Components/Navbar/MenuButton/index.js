@@ -22,7 +22,7 @@ const MenuButton = () => {
     }
     setIsSubmitting(false)
   }
-
+  
   return (
     <div className="justify-content-center mx-auto text-center">
       {!loggedIn && (
@@ -113,7 +113,9 @@ const MenuButton = () => {
                 <div className="text-left">
                   <strong>Hello,</strong>
                 </div>
-                <div>{currentUser?.firstName}</div>
+                {currentUser && (
+                <div>{currentUser.name}</div>
+                )}
               </div>
               <ChevronDownIcon
                 className={styles.chevronDownIcon}

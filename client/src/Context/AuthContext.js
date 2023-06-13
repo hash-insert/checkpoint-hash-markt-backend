@@ -1,80 +1,76 @@
-import { createContext, useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { createContext, useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { login, logout, signup } from "../services/authServices";
+import axios from "axios";
 
-const AuthContext = createContext()
-
-const defaultUser = JSON.parse(localStorage.getItem("user")) || {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  passwordConfirm: "",
-  address: "",
-}
-const defaultUsers = JSON.parse(localStorage.getItem("users")) || []
+const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [users, setUsers] = useState(defaultUsers)
-  const [currentUser, setCurrentUser] = useState(defaultUser)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [currentUser, setCurrentUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
-  const login = (email, password) => {
-    const userData = Object.values(users)
-    const indexOfUser = users.map((item) => item.email).indexOf(email)
-    if (indexOfUser && userData[indexOfUser].password === password) {
-      const finalUser = userData[indexOfUser]
-      setCurrentUser(finalUser)
-      setLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(finalUser))
+  const handleLogin = async (email, password) => {
+    try {
+      setIsSubmitting(true);
+      const user = await login(email, password);
+      setIsSubmitting(false);
+      setLoggedIn(true);
+      setCurrentUser(user);
+      navigate("/dashboard");
+    } catch (error) {
+      setErrors({ login: error.message });
     }
-  }
+  };
 
-  const logout = () => {
-    localStorage.removeItem("user")
-    setCurrentUser({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      address: "",
-    })
-    setLoggedIn(false)
-  }
-
-  useEffect(() => {
-    const isEmpty = Object.values(currentUser).every(value => value ? true : false)
-    if(Object.keys(errors).length > 0) {
-      setLoggedIn(false)
-    } else if (!isEmpty) {
-      setLoggedIn(false)
-    } else {
-      const userData = [...users, currentUser]
-      setUsers(userData)
-      localStorage.setItem("users", JSON.stringify(userData))
-      localStorage.setItem("user", JSON.stringify(currentUser))
-      setLoggedIn(true)
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setLoggedIn(false);
+      setCurrentUser(null);
+      navigate("/login");
+    } catch (error) {
+      setErrors({ logout: error.message });
     }
-  }, [errors])
+  };
+
+  const handleSignup = async (name, email, password) => {
+    try {
+      const user = await signup(name, email, password);
+      setLoggedIn(true);
+      setCurrentUser(user);
+      navigate("/dashboard"); 
+    } catch (error) {
+      if (error.message === "Email already exists") {
+        setErrors({ email: "User already exists. Please choose a different email." });
+      } else {
+        setErrors({ signup: error.message });
+      }
+    }
+  };
 
   const value = {
     currentUser,
-    setCurrentUser,
-    users,
     loggedIn,
     errors,
-    loggedIn,
-    setErrors,
+    login: handleLogin,
+    logout: handleLogout,
+    signup: handleSignup,
     setIsSubmitting,
-    logout,
-    login,
-  }
+    setCurrentUser,
+    setErrors,
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
-const useAuth = () => useContext(AuthContext)
+const useAuth = () => useContext(AuthContext);
 
-export { AuthProvider, useAuth }
+export { AuthProvider, useAuth };
