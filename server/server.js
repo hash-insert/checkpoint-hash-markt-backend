@@ -7,13 +7,16 @@ const app = express();
 // Routes
 const authRouter = require("./routes/auth");
 const productsRouter = require("./routes/products");
+const userRouter = require("./routes/user");
 const { errorHandler } = require("./errors/errorHandler");
+const { authorization } = require("./middlewares/authentication");
 
 // middlewares
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api", productsRouter);
+app.use("/api/user", authorization, userRouter);
 
 app.use(errorHandler);
 

@@ -16,11 +16,37 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     favorites: {
-      type: [Number],
+      type: [
+        {
+          id: Number,
+          title: String,
+          price: Number,
+          description: String,
+          category: String,
+          image: String,
+          rating: {
+            rate: Number,
+            count: Number,
+          },
+        },
+      ],
       required: true,
     },
     cart_items: {
-      type: [Number],
+      type: [
+        {
+          id: Number,
+          title: String,
+          price: Number,
+          description: String,
+          category: String,
+          image: String,
+          rating: {
+            rate: Number,
+            count: Number,
+          },
+        },
+      ],
       required: true,
     },
   },

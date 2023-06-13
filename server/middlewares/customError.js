@@ -22,6 +22,12 @@ class UnAuthorized extends CustomError {
     this.statusCode = StatusCodes.UNAUTHORIZED;
   }
 }
+class NotFound extends CustomError {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.NOT_FOUND;
+  }
+}
 class InternalServerError extends CustomError {
   constructor(message) {
     super(message);
@@ -34,4 +40,5 @@ module.exports = {
   Forbidden,
   UnAuthorized,
   InternalServerError,
+  NotFound,
 };
