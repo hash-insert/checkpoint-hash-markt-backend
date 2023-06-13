@@ -1,19 +1,15 @@
 import axios from 'axios';
 
-const API_URL = 'https://fakestoreapi.com';
+const API_URL = 'http://localhost:8190';
 
 const getCategories = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/products/categories`);
-    return response.data.map(item => item.replace(/^(.)|\s+(.)/g, c => c.toUpperCase()));
-  } catch (error) {
-    throw new Error(error.response.data.error);
-  }
+    const categoriesData = ["Electronics" , "Jewelery" , `Men's Clothing` , `Women's Clothing`]
+    return categoriesData;
 };
 
 const getProductsByCategory = async (category) => {
   try {
-    const response = await axios.get(`${API_URL}/products/category/${category}`);
+    const response = await axios.get(`${API_URL}/api/products/${category}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.error);
@@ -22,7 +18,8 @@ const getProductsByCategory = async (category) => {
 
 const getAllProducts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await axios.get(`${API_URL}/api/products`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.error);
