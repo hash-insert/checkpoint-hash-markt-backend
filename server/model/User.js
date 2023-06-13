@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    id:{
+      type:String,
+      requires:true
+
+    },
     name: {
       type: String,
       trim: true, // remove space from end & an begining if have
@@ -10,12 +15,22 @@ const userSchema = new mongoose.Schema(
     },
     
     email:{
-      type:email,
+      type:String,
       required:true
     },
     password: {
       type:String,
       required:true
+    },
+    favourites:{
+      type:[String],
+      required:true
+
+    },
+    cart_items:{
+      type:[String],
+      required:true 
+
     }
   },
   
