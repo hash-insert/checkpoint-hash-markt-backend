@@ -74,7 +74,7 @@ const login = async (req, res, next) => {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
 
-    return res.status(200).json({ message: "Logged in successfully" });
+    return res.status(200).json({ userId: user._id });
   } catch (error) {
     next(error);
   }

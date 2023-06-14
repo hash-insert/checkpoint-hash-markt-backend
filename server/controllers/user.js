@@ -1,4 +1,4 @@
-const { NotFound } = require("../middlewares/customError");
+const { NotFound, Forbidden } = require("../middlewares/customError");
 const { User } = require("../model/User");
 
 // cart
