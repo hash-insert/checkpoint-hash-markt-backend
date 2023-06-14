@@ -1,1 +1,48 @@
-# checkpoint-hash-markt-backend
+# hash-markt-backend
+
+1. **Introduction**
+  - This is a Full-Stack project that consists of the cliet side and server side.
+  - Client side code is built by using React.js and Tailwind.css
+  - The repository contains two folders, client and server
+  - The client folder contains the frontend code
+  - The server folder contains the backend code
+
+2. **Setup**
+  - To setup the repository in your local machine you need to clone the repository.
+  - After cloning the repository for the client side to run, you need to install the necessary dependencies.
+  - To install the necessary dependencies, run the following commands in the same order specified.
+  ___
+  >  - Open your terminal and navigate to the client folder:
+      ```
+      cd client
+      ```
+
+    - Install the necessary dependencies:
+      ```
+      npm install
+      ```
+
+    - Start the frontend:
+      ```
+      npm start
+      ```
+  ___
+
+  - To run the server, you need to install the necessary dependencies
+  - To install the necessary dependencies, run the following commands in the same order specified.
+  ___
+  >  - Open your terminal and navigate to the Server folder:
+      ```
+      cd client
+      ```
+
+    - Install the necessary dependencies:
+      ```
+      npm install
+      ```
+
+    - Start the backend:
+      ```
+      npm start
+      ```
+  ___
