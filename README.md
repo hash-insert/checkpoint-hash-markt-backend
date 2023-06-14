@@ -9,40 +9,37 @@
 
 2. **Setup**
   - To setup the repository in your local machine you need to clone the repository.
-  - After cloning the repository for the client side to run, you need to install the necessary dependencies.
-  - To install the necessary dependencies, run the following commands in the same order specified.
-  ___
-  >  - Open your terminal and navigate to the client folder:
-      ```
-      cd client
-      ```
+    - After cloning the repository for the client side to run, you need to install the necessary dependencies.
+    - Run the following commands in the same order specified.
+    ___
+    >  - Open your terminal and navigate to the client folder:
+        ```
+        cd client
+        ```
+    >  - Install the necessary dependencies:
+        ```
+        npm install
+        ```
 
-    - Install the necessary dependencies:
-      ```
-      npm install
-      ```
+    >  - Start the frontend:
+        ```
+        npm start
+        ```
+    ___
 
-    - Start the frontend:
-      ```
-      npm start
-      ```
-  ___
-
-  - To run the server, you need to install the necessary dependencies
-  - To install the necessary dependencies, run the following commands in the same order specified.
-  ___
-  >  - Open your terminal and navigate to the Server folder:
-      ```
-      cd client
-      ```
-
-    - Install the necessary dependencies:
-      ```
-      npm install
-      ```
-
-    - Start the backend:
-      ```
-      npm start
-      ```
-  ___
+    - To run the server, you need to install the necessary dependencies
+    - Run the following commands in the same order specified.
+    ___
+    >  - Open your terminal and navigate to the Server folder:
+        ```
+        cd server
+        ```
+    >  - Install the necessary dependencies:
+        ```
+        npm install
+        ```
+    > - Start the backend:
+        ```
+        npm start
+        ```
+    ___
