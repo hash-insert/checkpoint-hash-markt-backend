@@ -1,80 +1,81 @@
-import { createContext, useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  login as Login,
+  logout as Logout,
+  signup as Signup,
+} from "../services/authService";
 
-const AuthContext = createContext()
-
-const defaultUser = JSON.parse(localStorage.getItem("user")) || {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  passwordConfirm: "",
-  address: "",
-}
-const defaultUsers = JSON.parse(localStorage.getItem("users")) || []
-
+const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-  const [users, setUsers] = useState(defaultUsers)
-  const [currentUser, setCurrentUser] = useState(defaultUser)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [errors, setErrors] = useState({})
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const login = (email, password) => {
-    const userData = Object.values(users)
-    const indexOfUser = users.map((item) => item.email).indexOf(email)
-    if (indexOfUser && userData[indexOfUser].password === password) {
-      const finalUser = userData[indexOfUser]
-      setCurrentUser(finalUser)
-      setLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(finalUser))
+  const login = async (email, password) => {
+    try {
+      const response = await Login(email, password);
+      const user = response.data;
+      setCurrentUser(user);
+      setLoggedIn(true);
+      setIsSubmitting(false);
+      navigate("/dashboard");
+    } catch (error) {
+      setErrors({ login: error.message });
     }
-  }
+  };
 
-  const logout = () => {
-    localStorage.removeItem("user")
-    setCurrentUser({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      address: "",
-    })
-    setLoggedIn(false)
-  }
-
-  useEffect(() => {
-    const isEmpty = Object.values(currentUser).every(value => value ? true : false)
-    if(Object.keys(errors).length > 0) {
-      setLoggedIn(false)
-    } else if (!isEmpty) {
-      setLoggedIn(false)
-    } else {
-      const userData = [...users, currentUser]
-      setUsers(userData)
-      localStorage.setItem("users", JSON.stringify(userData))
-      localStorage.setItem("user", JSON.stringify(currentUser))
-      setLoggedIn(true)
+  const logout = async () => {
+    try {
+      await Logout();
+      setCurrentUser(null);
+      setLoggedIn(false);
+      navigate("/signin");
+    } catch (error) {
+      setErrors({ logout: error.message });
     }
-  }, [errors])
+  };
+
+  const signup = async (name, email, password) => {
+    try {
+      const response = await Signup(name, email, password);
+      const user = response.data;
+      const updatedUsers = [...users, user];
+      setUsers(updatedUsers);
+      setCurrentUser(user);
+      setLoggedIn(true);
+    } catch (error) {
+      setErrors({ signup: error.message });
+    }
+  };
 
   const value = {
     currentUser,
     setCurrentUser,
     users,
+    setUsers,
     loggedIn,
     errors,
-    loggedIn,
     setErrors,
     setIsSubmitting,
     logout,
     login,
-  }
+    signup,
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+  return (
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  );
+};
 
-const useAuth = () => useContext(AuthContext)
+const useAuth = () => useContext(AuthContext);
 
-export { AuthProvider, useAuth }
+export { AuthProvider, useAuth };

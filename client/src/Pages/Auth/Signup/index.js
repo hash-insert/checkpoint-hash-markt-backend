@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../Context/AuthContext'
 import styles from './styles.module.css'
 import validations from './validations'
+import { signup } from '../../../services/authService'
 
 const Signup = () => {
   const {
@@ -26,12 +27,13 @@ const Signup = () => {
     setCurrentUser({ ...currentUser, [e.target.name]: e.target.value })
   }
 
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault()
     setErrors(validations(currentUser, users)) 
     setIsSubmitting(true)
-    localStorage.setItem('user', JSON.stringify(currentUser))
-    localStorage.setItem('users', JSON.stringify(users))
+    navigate("/signin");
+    let a = await signup(currentUser.firstName,currentUser.email,currentUser.password);
+    console.log(a);
   }
 
   return (

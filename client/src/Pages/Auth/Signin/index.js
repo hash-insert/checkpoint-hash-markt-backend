@@ -18,7 +18,8 @@ const Signin = () => {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      await login(emailRef.current.value, passwordRef.current.value)
+      let b = await login(emailRef.current.value, passwordRef.current.value);
+      console.log(b)
     } catch {
       alert("Error!")
     }

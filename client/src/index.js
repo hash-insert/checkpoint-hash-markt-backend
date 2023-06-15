@@ -10,18 +10,17 @@ import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
+     <BrowserRouter>
     <AuthProvider>
       <ProductProvider>
         <CartProvider>
           <FavoriteProvider>
-            <BrowserRouter>
               <App />
-            </BrowserRouter>
           </FavoriteProvider>
         </CartProvider>
       </ProductProvider>
     </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 )
-

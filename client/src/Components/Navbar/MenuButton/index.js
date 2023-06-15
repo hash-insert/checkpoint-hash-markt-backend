@@ -111,9 +111,11 @@ const MenuButton = () => {
               />
               <div className="flex flex-col">
                 <div className="text-left">
+               
                   <strong>Hello,</strong>
                 </div>
-                <div>{currentUser?.firstName}</div>
+                <div>{currentUser?.firstName}
+                </div> 
               </div>
               <ChevronDownIcon
                 className={styles.chevronDownIcon}
