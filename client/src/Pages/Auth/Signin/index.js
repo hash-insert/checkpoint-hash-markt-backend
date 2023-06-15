@@ -6,12 +6,8 @@ import { LoginIcon } from "@heroicons/react/outline";
 import axios from "axios";
 
 const Signin = () => {
-  const {
-    login,
-    setLoggedIn,
-    setIsSubmitting,
-    loggedIn,
-  } = useAuth();
+  const { currentUser, login, setCurrentUser, setIsSubmitting, loggedIn } =
+    useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,18 +19,10 @@ const Signin = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const { data } = await axios.post("/signin", { email, password });
-      if (data.scuccess === true) {
-        setEmail("");
-        setPassword("");
-        await login(email, password);
-        console.log("Sign in successfully");
-        console.log(data);
-        localStorage.setItem("access_token", JSON.stringify(data));
-        setLoggedIn(true);
-      }
-    } catch (err) {
-      console.log("Error!:", err);
+      await axios.post("/signin", { email, password });
+      await login(emailRef.current.value, passwordRef.current.value);
+    } catch {
+      alert("Error!");
     }
     setIsSubmitting(false);
   };
@@ -43,7 +31,7 @@ const Signin = () => {
 
   useEffect(() => {
     loggedIn && navigate("/");
-  }, [loggedIn, navigate]);
+  }, [loggedIn]);
 
   return (
     <div className={styles.formGroupContainer}>

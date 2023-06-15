@@ -47,7 +47,7 @@ const login = async (req, res, next) => {
     //existing mail or not
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).send("user not found");
+      res.status(404).send("user not found");
     }
     //password checking
     const validUser = await bcrypt.compare(password, user.password);
@@ -59,7 +59,7 @@ const login = async (req, res, next) => {
     user.token = token;
     res.cookie("access_token", token, {
       httpOnly: true,
-      expired: new Date(Date, now()) + 24 * 60 * 60 * 1000,
+      expired: new Date(Date.now()) + 24 * 60 * 60 * 1000,
     });
     res.status(200).json({ success: true, user, msg: "login succesful" });
   } catch (error) {
@@ -68,4 +68,9 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login };
+const logout = (req, res, next) => {
+  res.clearCookie("access_token");
+  res.status(200).json({ success: true, msg: "logout succesful" });
+};
+
+module.exports = { signup, login, logout };

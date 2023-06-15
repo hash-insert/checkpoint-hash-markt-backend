@@ -2,17 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const app = express();
 const bodyParser = require("body-parser");
 
 // Routes
 const auth = require("./routes/auth");
-app.use(express.json());
-app.use("/", auth);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieparser());
+
+app.use(express.json());
+app.use("/", auth);
 
 const port = process.env.PORT || 8000;
 
