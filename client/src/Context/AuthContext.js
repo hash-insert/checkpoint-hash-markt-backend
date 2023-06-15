@@ -1,16 +1,16 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, logout, signup } from "../services/authServices";
-import axios from "axios";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-    passwordConfirm: ""
+    // name: "",
+    // email: "",
+    // password: "",
+    // passwordConfirm: "",
+    // userId: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -20,7 +20,8 @@ const AuthProvider = ({ children }) => {
   const handleLogin = async (email, password) => {
     try {
       setIsSubmitting(true);
-      const user = await login(email, password);
+      const {user} = await login(email, password);
+      console.log(user.name);
       setIsSubmitting(false);
       setLoggedIn(true);
       setCurrentUser(user);
@@ -43,10 +44,10 @@ const AuthProvider = ({ children }) => {
 
   const handleSignup = async (name, email, password) => {
     try {
-      const user = await signup(name, email, password);
+      const {user} = await signup(name, email, password);
       setLoggedIn(true);
-      setCurrentUser(user);
-      navigate("/dashboard"); 
+      setCurrentUser({ user });
+      navigate("/dashboard");
     } catch (error) {
       if (error.message === "Email already exists") {
         setErrors({ email: "User already exists. Please choose a different email." });

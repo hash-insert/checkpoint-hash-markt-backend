@@ -1,34 +1,48 @@
-import { useState, createContext, useContext, useEffect } from 'react'
+import { useState, createContext, useContext, useEffect } from 'react';
+import {getUserFavorites,addFavoriteProduct} from "../services/userService";
+import {useAuth} from "../Context/AuthContext";
 
 const FavoriteContext = createContext()
 
-const defaultFavorite = JSON.parse(localStorage.getItem('favorite')) || []
-
-const FavoriteProvider = ({children}) => {
-
-  const [favoriteItems, setFavoriteItems] = useState(defaultFavorite)
+const FavoriteProvider = ({ children }) => {
+  const [favoriteItems, setFavoriteItems] = useState([]);
+  
+  const {currentUser} = useAuth();
 
   useEffect(() => {
-    localStorage.setItem('favorite', JSON.stringify(favoriteItems))
-  }, [favoriteItems])
+    const fetchData = async () => {
+      try {
+        const favoriteItems = await getUserFavorites(currentUser._id); 
+        setFavoriteItems(favoriteItems);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  const addToFavorite = (data, findFavoriteItem) => {
-    if(!findFavoriteItem) {
-      return setFavoriteItems((items) => [data, ...items] )
+    fetchData();
+  }, [currentUser]);
+
+  const addToFavorite = async (data, findFavoriteItem) => {
+    try {
+      if (!findFavoriteItem) {
+        const updatedItems = await addFavoriteProduct(currentUser._id, data); 
+      } else {
+        const filtered = favoriteItems.filter((item) => item.id !== findFavoriteItem.id);
+        setFavoriteItems(filtered);
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-    const filtered = favoriteItems.filter((item) => item.id !== findFavoriteItem.id)
-    setFavoriteItems(filtered)
-  }
+  };
 
   const values = {
     favoriteItems,
     addToFavorite,
-  }
+  };
 
-  return <FavoriteContext.Provider value={values}>{children}</FavoriteContext.Provider>
+  return <FavoriteContext.Provider value={values}>{children}</FavoriteContext.Provider>;
+};
 
-}
 
 const useFavorite = () => useContext(FavoriteContext)
 
