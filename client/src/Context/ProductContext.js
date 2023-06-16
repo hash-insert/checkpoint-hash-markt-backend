@@ -39,7 +39,7 @@ export const ProductProvider = ({ children }) => {
         console.log(error);
       }
     }
-    getProductData()
+    getProductData(category)
   }, [category])
   useEffect(() => {
     setLoading(true)

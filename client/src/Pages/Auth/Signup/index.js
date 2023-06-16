@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../Context/AuthContext'
 import styles from './styles.module.css'
 import validations from './validations'
-import { signup } from '../../../services/authService'
+
 
 const Signup = () => {
   const {
@@ -14,7 +14,8 @@ const Signup = () => {
     loggedIn,
     errors,
     setErrors,
-    setIsSubmitting
+    setIsSubmitting,
+    contextsignup
   } = useAuth()
 
   const navigate = useNavigate()
@@ -31,8 +32,7 @@ const Signup = () => {
     e.preventDefault()
     setErrors(validations(currentUser, users)) 
     setIsSubmitting(true)
-    navigate("/signin");
-    let a = await signup(currentUser.firstName,currentUser.email,currentUser.password);
+    let a = await contextsignup(currentUser.firstName,currentUser.email,currentUser.password);
     console.log(a);
   }
 

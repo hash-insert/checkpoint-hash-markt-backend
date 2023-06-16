@@ -15,7 +15,15 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    favorites: {
+        type: [Number],
+        required: true,
+      },
+      cart_items: {
+        type: [Number],
+        required: true,
+      },
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

@@ -114,7 +114,7 @@ const MenuButton = () => {
                
                   <strong>Hello,</strong>
                 </div>
-                <div>{currentUser?.firstName}
+                <div>{currentUser?.name}
                 </div> 
               </div>
               <ChevronDownIcon

@@ -18,8 +18,10 @@ mongoose.connect(process.env.MONGODB_URI, {
   console.log("Error connecting to MongoDB:", err);
 });
 
+const productsRouter = require("./routes/products")
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
+app.use("/api/products",productsRouter);
 
 const port = process.env.PORT || 8000;
 

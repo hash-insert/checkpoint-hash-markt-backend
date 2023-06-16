@@ -33,6 +33,9 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  
+  
+
   const logout = async () => {
     try {
       await Logout();
@@ -44,14 +47,17 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (name, email, password) => {
+  const contextsignup = async (name, email, password) => {
     try {
       const response = await Signup(name, email, password);
+      console.log(response);
       const user = response.data;
       const updatedUsers = [...users, user];
-      setUsers(updatedUsers);
-      setCurrentUser(user);
       setLoggedIn(true);
+      setCurrentUser(response);
+      console.log(user);
+      setUsers(updatedUsers);
+      console.log(user);
     } catch (error) {
       setErrors({ signup: error.message });
     }
@@ -68,7 +74,7 @@ const AuthProvider = ({ children }) => {
     setIsSubmitting,
     logout,
     login,
-    signup,
+    contextsignup,
   };
 
   return (
