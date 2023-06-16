@@ -1,6 +1,7 @@
 const User = require("../model/User");
+const jwt = require("jsonwebtoken");
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist) {
     return res.status(400).send("Email already Exists");
@@ -14,13 +15,14 @@ exports.signup = async (req, res) => {
   });
   try {
     const savedUser = await user.save();
-    res.send(savedUser);
+    res.status(201).json({success: true, savedUser});
   } catch (err) {
     res.status(400).send(`Error while signing up: ${err}`);
+    next(err)
   }
 };
 
-exports.signin = async (req, res) => {
+exports.signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -32,15 +34,36 @@ exports.signin = async (req, res) => {
     if (!user) {
       return res.status(409).json({ message: "User not found" });
     }
-    const isMatched = await User.comparePassword(password);
-    if (!isMatched) {
+    const validPassword = await user.comparePassword(password);
+    if (!validPassword) {
       return res.status(409).json({ message: "Invalid password" });
     }
-    res.send("Something ");
+    generateToken(user, 200, res);
+    next();
   } catch (err) {
     console.log(err);
-    return res
-      .status(409)
-      .json({ message: "Cannot login, please ckeck the credentials!" });
+    return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+const generateToken = async (user, statusCode, res) => {
+  const token = await user.jwtGenerateToken();
+  const expireToken = 24 * 60 * 60 * 1000;
+  const options = {
+    httpOnly: true,
+    expires: new Date(Date.now() + expireToken),
+  };
+  res
+    .status(statusCode)
+    .cookie("token", token, options)
+    .json({ success: true, token });
+};
+
+exports.logout = (req, res, next) => {
+  res.clearCookie("token");
+  res.status(200).json({
+    success: true,
+    message: "Loggged out",
+  });
+  next();
 };
