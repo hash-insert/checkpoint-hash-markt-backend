@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../Context/AuthContext'
 import styles from './styles.module.css'
 import validations from './validations'
+import { signup } from '../../../Pages/Services/authService';
 
 const Signup = () => {
   const {
@@ -20,19 +21,27 @@ const Signup = () => {
   
   useEffect(() => {
     loggedIn && navigate('/')
-  }, [loggedIn])
+  }, [loggedIn, navigate])
 
   const handleSignUpFormChange = (e) => {
     setCurrentUser({ ...currentUser, [e.target.name]: e.target.value })
   }
 
-  const handleSignUpSubmit = (e) => {
-    e.preventDefault()
-    setErrors(validations(currentUser, users)) 
-    setIsSubmitting(true)
-    localStorage.setItem('user', JSON.stringify(currentUser))
-    localStorage.setItem('users', JSON.stringify(users))
-  }
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    setErrors(validations(currentUser, users));
+    setIsSubmitting(true);
+  
+    try {
+      const savedUser = await signup(currentUser);
+      // Handle successful signup
+      console.log('User signed up:', savedUser);
+      setCurrentUser({});
+      navigate('/signin');
+    } catch (error) {
+      console.error('Error while signing up:', error.message);
+    }
+  };
 
   return (
     <div className={styles.formGroupContainer}>
