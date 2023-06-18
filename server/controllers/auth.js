@@ -9,27 +9,27 @@ const signup = async (req, res, next) => {
     const { firstName, lastName, email, password } = req.body;
     //checking all the fileds presence
     if (!(firstName && lastName && email && password)) {
-      res.status(401).send("All fields are required");
+      return res.status(401).send("All fields are required");
     }
     //checking for user presence
     const userExist = await User.findOne({ email });
     if (userExist) {
-      res.status(400).send("email already exists");
-    } else {
-      //encrypting password using bcryptjs
-      const encryptedPassword = await bcrypt.hash(password, 10);
-      //creating new user
-      const user = await User.create({
-        firstName,
-        lastName,
-        email,
-        password: encryptedPassword,
-      });
-      //creating and sending token
-      const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
-      user.token = token;
-      res.status(201).json({ success: true, user, msg: "signup succesful" });
+      return res.status(400).send("email already exists");
     }
+    //encrypting password using bcryptjs
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    //creating new user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: encryptedPassword,
+    });
+    //creating and sending token
+    const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
+    user.token = token;
+    console.log(user)
+    return res.json({ success: true, user, msg: "signup succesful" });
   } catch (error) {
     console.log(error);
     next(error);
@@ -42,26 +42,27 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     //chechking credentials
     if (!(email && password)) {
-      res.status(401).send("All fields are required");
+      return res.status(401).send("All fields are required");
     }
     //existing mail or not
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(404).send("user not found");
+      return res.status(404).send("user not found");
     }
     //password checking
     const validUser = await bcrypt.compare(password, user.password);
     if (!validUser) {
-      res.status(400).send("incorrect password");
+      return res.status(400).send("incorrect password");
     }
     //token generation and sending
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
     user.token = token;
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      expired: new Date(Date.now()) + 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({ success: true, user, msg: "login succesful" });
+    return res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expired: new Date(Date.now()) + 24 * 60 * 60 * 1000,
+      })
+      .json({ success: true, user, msg: "login succesful" });
   } catch (error) {
     console.log(error);
     next(error);

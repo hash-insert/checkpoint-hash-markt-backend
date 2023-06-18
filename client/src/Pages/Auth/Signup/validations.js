@@ -1,6 +1,5 @@
 
 const validations = (currentUser, users) => {
-  console.log(users)
   const isUser = users.some((item) => item.email === currentUser.email)
 
   let errors = {}

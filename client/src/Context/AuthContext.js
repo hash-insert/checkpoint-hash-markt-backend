@@ -1,7 +1,9 @@
-import { createContext, useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { createContext, useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AuthContext = createContext()
+import { signup, signin, logout } from "../services/authServices";
+
+const AuthContext = createContext();
 
 const defaultUser = JSON.parse(localStorage.getItem("user")) || {
   firstName: "",
@@ -10,54 +12,76 @@ const defaultUser = JSON.parse(localStorage.getItem("user")) || {
   password: "",
   passwordConfirm: "",
   address: "",
-}
-const defaultUsers = JSON.parse(localStorage.getItem("users")) || []
+};
+const defaultUsers = JSON.parse(localStorage.getItem("users")) || [];
 
 const AuthProvider = ({ children }) => {
-  const [users, setUsers] = useState(defaultUsers)
-  const [currentUser, setCurrentUser] = useState(defaultUser)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [errors, setErrors] = useState({})
+  const navigate = useNavigate();
+  const [users, setUsers] = useState(defaultUsers);
+  const [currentUser, setCurrentUser] = useState(defaultUser);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const login = (email, password) => {
-    const userData = Object.values(users)
-    const indexOfUser = users.map((item) => item.email).indexOf(email)
-    if (indexOfUser && userData[indexOfUser].password === password) {
-      const finalUser = userData[indexOfUser]
-      setCurrentUser(finalUser)
-      setLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(finalUser))
+  const handleSignup = async (firstName, lastName, email, password) => {
+    try {
+      const response = await signup(firstName, lastName, email, password);
+      setLoggedIn(true);
+      const user = response.user;
+      console.log(user);
+      setCurrentUser({ user });
+      navigate("/signin");
+    } catch (error) {
+      if (error.message === "Email already exists") {
+        setErrors({
+          email: "User already exists. Please choose a different email.",
+        });
+      } else {
+        setErrors({ signup: error.message });
+      }
     }
-  }
+  };
+  const handleLogin = async (email, password) => {
+    try {
+      setIsSubmitting(true);
+      const response = await signin(email, password);
+      const userData = response.user;
+      setIsSubmitting(false);
+      setLoggedIn(true);
+      setCurrentUser(userData);
+      navigate("/");
+    } catch (error) {
+      console.log("error in handling login:", error);
+    }
+  };
 
-  const logout = () => {
-    localStorage.removeItem("user")
-    setCurrentUser({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      passwordConfirm: "",
-      address: "",
-    })
-    setLoggedIn(false)
-  }
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setLoggedIn(false);
+      setCurrentUser(null);
+      navigate("/signin");
+    } catch (error) {
+      console.log("error in handling logout:", error);
+    }
+  };
 
   useEffect(() => {
-    const isEmpty = Object.values(currentUser).every(value => value ? true : false)
-    if(Object.keys(errors).length > 0) {
-      setLoggedIn(false)
+    const isEmpty = Object.values(currentUser).every((value) =>
+      value ? true : false
+    );
+    if (Object.keys(errors).length > 0) {
+      setLoggedIn(false);
     } else if (!isEmpty) {
-      setLoggedIn(false)
+      setLoggedIn(false);
     } else {
-      const userData = [...users, currentUser]
-      setUsers(userData)
-      localStorage.setItem("users", JSON.stringify(userData))
-      localStorage.setItem("user", JSON.stringify(currentUser))
-      setLoggedIn(true)
+      const userData = [...users, currentUser];
+      setUsers(userData);
+      localStorage.setItem("users", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(currentUser));
+      setLoggedIn(true);
     }
-  }, [errors])
+  }, [errors]);
 
   const value = {
     currentUser,
@@ -65,16 +89,16 @@ const AuthProvider = ({ children }) => {
     users,
     loggedIn,
     errors,
-    loggedIn,
     setErrors,
     setIsSubmitting,
-    logout,
-    login,
-  }
+    handleSignup,
+    handleLogin,
+    handleLogout,
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
-const useAuth = () => useContext(AuthContext)
+const useAuth = () => useContext(AuthContext);
 
-export { AuthProvider, useAuth }
+export { AuthProvider, useAuth };

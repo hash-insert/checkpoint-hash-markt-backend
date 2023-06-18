@@ -8,12 +8,15 @@ const bodyParser = require("body-parser");
 
 // Routes
 const auth = require("./routes/auth");
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", 
+  credentials: true,
+}));
 app.use(bodyParser.json());
 app.use(cookieparser());
 
 app.use(express.json());
-app.use("/", auth);
+app.use("/api/auth", auth);
 
 const port = process.env.PORT || 8000;
 
