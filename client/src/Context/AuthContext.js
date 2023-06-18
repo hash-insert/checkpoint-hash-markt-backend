@@ -21,7 +21,6 @@ const AuthProvider = ({ children }) => {
     // Check if the user is logged in on component mount
     const checkLoggedIn = () => {
       const storedUser = localStorage.getItem("currentUser");
-      console.log(storedUser);
       if (storedUser) {
         setCurrentUser(JSON.parse(storedUser));
         setLoggedIn(true);
@@ -34,8 +33,7 @@ const AuthProvider = ({ children }) => {
   const handleLogin = async (email, password) => {
     try {
       setIsSubmitting(true);
-      const {user} = await login(email, password);
-      console.log(user.name);
+      const user = await login(email, password);
       setIsSubmitting(false);
       setLoggedIn(true);
       setCurrentUser(user);
@@ -62,8 +60,9 @@ const AuthProvider = ({ children }) => {
     try {
       const user = await signup(name, email, password);
       setLoggedIn(true);
-      setCurrentUser({ user });
-      navigate("/dashboard");
+      setCurrentUser(user);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      navigate("/login");
     } catch (error) {
       if (error.message === "Email already exists") {
         setErrors({
