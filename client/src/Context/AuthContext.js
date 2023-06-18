@@ -17,13 +17,29 @@ const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if the user is logged in on component mount
+    const checkLoggedIn = () => {
+      const storedUser = localStorage.getItem("currentUser");
+      console.log(storedUser);
+      if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+        setLoggedIn(true);
+      }
+    };
+
+    checkLoggedIn();
+  }, []);
+
   const handleLogin = async (email, password) => {
     try {
       setIsSubmitting(true);
-      const user = await login(email, password);
+      const {user} = await login(email, password);
+      console.log(user);
       setIsSubmitting(false);
       setLoggedIn(true);
       setCurrentUser(user);
+      localStorage.setItem("currentUser", JSON.stringify(user));
       navigate("/dashboard");
     } catch (error) {
       setErrors({ login: error.message });
@@ -35,6 +51,7 @@ const AuthProvider = ({ children }) => {
       await logout();
       setLoggedIn(false);
       setCurrentUser(null);
+      localStorage.removeItem("currentUser");
       navigate("/login");
     } catch (error) {
       setErrors({ logout: error.message });
@@ -46,10 +63,13 @@ const AuthProvider = ({ children }) => {
       const user = await signup(name, email, password);
       setLoggedIn(true);
       setCurrentUser(user);
-      navigate("/dashboard"); 
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      navigate("/login");
     } catch (error) {
       if (error.message === "Email already exists") {
-        setErrors({ email: "User already exists. Please choose a different email." });
+        setErrors({
+          email: "User already exists. Please choose a different email."
+        });
       } else {
         setErrors({ signup: error.message });
       }
@@ -65,10 +85,12 @@ const AuthProvider = ({ children }) => {
     signup: handleSignup,
     setIsSubmitting,
     setCurrentUser,
-    setErrors,
+    setErrors
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  );
 };
 
 const useAuth = () => useContext(AuthContext);
