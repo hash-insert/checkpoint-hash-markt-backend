@@ -8,7 +8,6 @@ const LOGOUT_URL = `${API_URL}/api/auth/logout`;
 const login = async (email, password) => {
   try {
     const response = await axios.post(LOGIN_URL, { email, password }, {withCredentials : true});
-    console.log(response.data)
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.error);
