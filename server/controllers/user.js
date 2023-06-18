@@ -1,4 +1,4 @@
-import Customer from "../model/model.js";
+import Customer from "../model/user.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
