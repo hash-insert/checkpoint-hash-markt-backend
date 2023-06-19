@@ -9,6 +9,7 @@ import {
 import styles from './styles.module.css'
 import { useAuth } from '../../../Context/AuthContext'
 import NAVIGATION from '../../../Config/navbarItemList'
+// import jwt from 'jsonwebtoken';
 
 const MenuButton = () => {
   const { loggedIn, currentUser, setIsSubmitting, logout } = useAuth()
@@ -22,6 +23,9 @@ const MenuButton = () => {
     }
     setIsSubmitting(false)
   }
+
+  // const decodedToken = jwt.decode(currentUser?.token);
+  // const name = decodedToken?.name;
 
   return (
     <div className="justify-content-center mx-auto text-center">
@@ -113,7 +117,7 @@ const MenuButton = () => {
                 <div className="text-left">
                   <strong>Hello,</strong>
                 </div>
-                <div>{currentUser?.firstName}</div>
+                <div>{currentUser?.token}</div>
               </div>
               <ChevronDownIcon
                 className={styles.chevronDownIcon}

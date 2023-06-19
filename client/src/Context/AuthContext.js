@@ -20,16 +20,26 @@ const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false)
   const [errors, setErrors] = useState({})
 
-  const login = (email, password) => {
-    const userData = Object.values(users)
-    const indexOfUser = users.map((item) => item.email).indexOf(email)
-    if (indexOfUser && userData[indexOfUser].password === password) {
-      const finalUser = userData[indexOfUser]
-      setCurrentUser(finalUser)
-      setLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(finalUser))
+  // const login = (email, password) => {
+  //   const userData = Object.values(users)
+  //   const indexOfUser = users.map((item) => item.email).indexOf(email)
+  //   if (indexOfUser && userData[indexOfUser].password === password) {
+  //     const finalUser = userData[indexOfUser]
+  //     setCurrentUser(finalUser)
+  //     setLoggedIn(true)
+  //     localStorage.setItem("user", JSON.stringify(finalUser))
+  //   }
+  // }
+
+  const login = (token) => {
+    const user = { token };
+    if (user) {
+      setCurrentUser(user);
+      setLoggedIn(true);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
     }
-  }
+  };
 
   const logout = () => {
     localStorage.removeItem("user")
