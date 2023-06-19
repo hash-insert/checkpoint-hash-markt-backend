@@ -27,8 +27,18 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
     },
+    favorites: {
+      type : [Number],
+      required : true
+
+    },
+    cart_items: {
+      type : [Number],
+      required: true
+    }
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("User", userSchema);
+
