@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const auth = require("./routes/auth");
 const cors = require('cors');
 const product = require("./routes/product");
+const user = require("./routes/user")
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ database.once('open', () => {
 // Routes
 app.use("/api", auth);
 app.use("/api", product);
+app.use("/api", user)
 
 const port = process.env.PORT || 8000;
 

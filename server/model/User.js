@@ -22,11 +22,23 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{6,30}$/,
-        "Password must be six characters including one uppercase letter, one special character and alphanumeric characters?",
-      ],
+      // match: [
+      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{6,30}$/,
+      //   "Password must be six characters including one uppercase letter, one special character and alphanumeric characters?",
+      // ],
     },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      },
+    ],
+    cart_items: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      },
+    ],
   },
   { timestamps: true }
 );
