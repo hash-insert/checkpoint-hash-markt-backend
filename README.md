@@ -19,14 +19,12 @@
     >  - Install the necessary dependencies:
         ```
         npm install
-        ```
-
+l        ```
     >  - Start the frontend:
         ```
         npm start
         ```
     ___
-
     - To run the server, you need to install the necessary dependencies
     - Run the following commands in the same order specified.
     ___
@@ -43,3 +41,9 @@
         npm start
         ```
     ___
+
+3. **Authentication**
+  - Authentication is done by jsonWebTokens(jwt)
+  - Passwords are encrypted before saving them to the database using bcrypt.
+  - Comparing the passwords at the time of login using bcrypt
+  - Generating tokens to acces the user details while the user is loggedin and using that token to do authentication
