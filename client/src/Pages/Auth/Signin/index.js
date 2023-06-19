@@ -1,37 +1,35 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../Context/AuthContext";
-import styles from "./styles.module.css";
-import { LoginIcon } from "@heroicons/react/outline";
-import axios from "axios";
+import { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../Context/AuthContext'
+import styles from './styles.module.css'
+import { LoginIcon } from '@heroicons/react/outline'
 
 const Signin = () => {
-  const { currentUser, login, setCurrentUser, setIsSubmitting, loggedIn } =
-    useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { currentUser, handleLogin, setCurrentUser, setIsSubmitting, loggedIn } = useAuth()
 
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const emailRef = useRef()
+  const passwordRef = useRef()
 
   const handleSignIn = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+    e.preventDefault()
+    setIsSubmitting(true)
     try {
-      await axios.post("/signin", { email, password });
-      await login(emailRef.current.value, passwordRef.current.value);
-    } catch {
-      alert("Error!");
+      await handleLogin(emailRef.current.value, passwordRef.current.value)
+    } catch(error) {
+      console.log("error in handling signin:",error)
     }
-    setIsSubmitting(false);
-  };
+    setIsSubmitting(false)
+  }
 
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  
   useEffect(() => {
-    loggedIn && navigate("/");
-  }, [loggedIn]);
+    loggedIn && navigate('/')
+  }, [loggedIn])
 
   return (
     <div className={styles.formGroupContainer}>
@@ -73,10 +71,7 @@ const Signin = () => {
               <div className={styles.linkDiv}>
                 <span>
                   Don't have an account? Sign up{" "}
-                  <Link
-                    to="/signup"
-                    className="text-yellow-400 hover:underline"
-                  >
+                  <Link to="/signup" className="text-yellow-400 hover:underline">
                     {" "}
                     here.
                   </Link>
@@ -93,7 +88,7 @@ const Signin = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Signin;
+export default Signin

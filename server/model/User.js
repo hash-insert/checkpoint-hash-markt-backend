@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       trim: true, // remove space from end & an begining if have
-      required: true,
+      required: false,
       // maxlength: 35,
     },
     lastName: {
