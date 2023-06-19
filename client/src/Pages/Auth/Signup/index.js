@@ -10,17 +10,18 @@ const Signup = () => {
     currentUser,
     setCurrentUser,
     users,
-    loggedIn,
     errors,
     setErrors,
-    setIsSubmitting,handleSignup
+    isSubmitting,
+    setIsSubmitting,
+    handleSignup,
   } = useAuth();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    loggedIn && navigate("/");
-  }, [loggedIn]);
+    isSubmitting && navigate("/signin");
+  }, [isSubmitting]);
 
   const handleSignUpFormChange = (e) => {
     setCurrentUser({ ...currentUser, [e.target.name]: e.target.value });
@@ -40,6 +41,7 @@ const Signup = () => {
     } catch (error) {
       console.log("error in signup:", error);
     }
+    setIsSubmitting(false);
   };
 
   return (

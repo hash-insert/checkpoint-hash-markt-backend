@@ -29,7 +29,7 @@ const signup = async (req, res, next) => {
     const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
     user.token = token;
     console.log(user)
-    return res.json({ success: true, user, msg: "signup succesful" });
+    return res.status(201).json({ success: true, user, msg: "signup succesful" });
   } catch (error) {
     console.log(error);
     next(error);
@@ -70,6 +70,7 @@ const login = async (req, res, next) => {
 };
 
 const logout = (req, res, next) => {
+  localStorage.clear()
   res.clearCookie("access_token");
   res.status(200).json({ success: true, msg: "logout succesful" });
 };

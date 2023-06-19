@@ -26,10 +26,20 @@ const AuthProvider = ({ children }) => {
   const handleSignup = async (firstName, lastName, email, password) => {
     try {
       const response = await signup(firstName, lastName, email, password);
-      setLoggedIn(true);
       const user = response.user;
-      console.log(user);
-      setCurrentUser({ user });
+      console.log(JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
+      function setCookie(name, value, days) {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + days);
+      
+        const cookieValue = encodeURIComponent(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
+        document.cookie = name + '=' + cookieValue;
+      }
+      
+      // Set the token as a cookie
+      setCookie('access_token', user.token, 7);
+      // setCurrentUser({ user });
       navigate("/signin");
     } catch (error) {
       if (error.message === "Email already exists") {
@@ -90,6 +100,7 @@ const AuthProvider = ({ children }) => {
     loggedIn,
     errors,
     setErrors,
+    isSubmitting,
     setIsSubmitting,
     handleSignup,
     handleLogin,

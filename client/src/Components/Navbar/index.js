@@ -1,27 +1,28 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import MenuButton from './MenuButton'
-import CartButton from './CartButton'
-import styles from './styles.module.css'
-import { useProduct } from '../../Context/ProductContext'
-import { useAuth } from '../../Context/AuthContext'
-import { Disclosure, } from '@headlessui/react'
-import { MenuIcon, XIcon, LogoutIcon } from '@heroicons/react/outline'
-import NAVIGATION from '../../Config/navbarItemList'
-
+import React from "react";
+import { Link } from "react-router-dom";
+import MenuButton from "./MenuButton";
+import CartButton from "./CartButton";
+import styles from "./styles.module.css";
+import { useProduct } from "../../Context/ProductContext";
+import { useAuth } from "../../Context/AuthContext";
+import { Disclosure } from "@headlessui/react";
+import { MenuIcon, XIcon, LogoutIcon } from "@heroicons/react/outline";
+import NAVIGATION from "../../Config/navbarItemList";
 const Navbar = () => {
-  const { categories, setCategory } = useProduct()
-  const { loggedIn, currentUser, setIsSubmitting, logout } = useAuth()
+  const { handleLogout } = useAuth();
 
-  const handleLogout = async () => {
-    setIsSubmitting(true)
-    try {
-      await logout()
-    } catch {
-      alert("Error")
-    }
-    setIsSubmitting(false)
-  }
+  const { categories, setCategory } = useProduct();
+  const { loggedIn, currentUser, setIsSubmitting, logout } = useAuth();
+
+  // const handleLogout = async () => {
+  //   setIsSubmitting(true)
+  //   try {
+  //     await logout()
+  //   } catch (error){
+  //     console.log("error in logout", error)
+  //   }
+  //   setIsSubmitting(false)
+  // }
 
   return (
     <>
@@ -44,7 +45,7 @@ const Navbar = () => {
                 <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                   <div className={styles.logo}>
                     <Link className={styles.link} to="/">
-                      <h1 className='text-yellow-400 text-4xl'>#markt</h1>
+                      <h1 className="text-yellow-400 text-4xl">#markt</h1>
                     </Link>
                   </div>
                   <div className="hidden sm:block sm:ml-6"></div>
@@ -63,55 +64,68 @@ const Navbar = () => {
 
             <Disclosure.Panel className={styles.disclosurePanel}>
               <div>
-                {!loggedIn && NAVIGATION.map(({
-                  id,
-                  name,
-                  link,
-                  icon,
-                  underlined,
-                  loggedIn,
-                  onclick,
-                }) => (
-                  <Link
-                    to={link}
-                    onClick={onclick ? onclick : null}
-                    className={`${!loggedIn || loggedIn === "public" || "hidden"
-                      }`}
-                    key={`${name}-00${id}`}
-                  >
-                    <Disclosure.Button className={`${styles.disclosureButton} ${underlined ? "border-b-2 border-zinc-900/10" : ""}`}>
-                      {icon}
-                      {name}
-                    </Disclosure.Button>
-                  </Link>
-                ))}
-                {loggedIn && NAVIGATION.map(({
-                  id,
-                  name,
-                  link,
-                  icon,
-                  underlined,
-                  loggedIn,
-                  onclick,
-                }) => (
-                  <Link
-                    to={link}
-                    onClick={onclick ? onclick : null}
-                    className={`${loggedIn || loggedIn === "public" || "hidden"
-                      }`}
-                    key={`${name}-00${id}`}
-                  >
-                    <Disclosure.Button className={`${styles.disclosureButton} ${underlined ? "border-b-2 border-zinc-900/10" : ""}`}>
-                      {icon}
-                      {name}
-                    </Disclosure.Button>
-                  </Link>
-                ))}
+                {!loggedIn &&
+                  NAVIGATION.map(
+                    ({
+                      id,
+                      name,
+                      link,
+                      icon,
+                      underlined,
+                      loggedIn,
+                      onclick,
+                    }) => (
+                      <Link
+                        to={link}
+                        onClick={onclick ? onclick : null}
+                        className={`${
+                          !loggedIn || loggedIn === "public" || "hidden"
+                        }`}
+                        key={`${name}-00${id}`}
+                      >
+                        <Disclosure.Button
+                          className={`${styles.disclosureButton} ${
+                            underlined ? "border-b-2 border-zinc-900/10" : ""
+                          }`}
+                        >
+                          {icon}
+                          {name}
+                        </Disclosure.Button>
+                      </Link>
+                    )
+                  )}
+                {loggedIn &&
+                  NAVIGATION.map(
+                    ({
+                      id,
+                      name,
+                      link,
+                      icon,
+                      underlined,
+                      loggedIn,
+                      onclick,
+                    }) => (
+                      <Link
+                        to={link}
+                        onClick={onclick ? onclick : null}
+                        className={`${
+                          loggedIn || loggedIn === "public" || "hidden"
+                        }`}
+                        key={`${name}-00${id}`}
+                      >
+                        <Disclosure.Button
+                          className={`${styles.disclosureButton} ${
+                            underlined ? "border-b-2 border-zinc-900/10" : ""
+                          }`}
+                        >
+                          {icon}
+                          {name}
+                        </Disclosure.Button>
+                      </Link>
+                    )
+                  )}
                 {loggedIn && (
-                  <Link
-                    to="/"
-                    onClick={handleLogout}
-                  >
+                  <Link to="/" onClick={handleLogout}>
                     <Disclosure.Button className={styles.disclosureButton}>
                       <LogoutIcon
                         className="mr-2 my-auto h-5 w-5"
@@ -121,7 +135,6 @@ const Navbar = () => {
                     </Disclosure.Button>
                   </Link>
                 )}
-
               </div>
             </Disclosure.Panel>
           </>
