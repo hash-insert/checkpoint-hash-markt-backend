@@ -2,23 +2,27 @@ const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 
 exports.signup = async (req, res, next) => {
-  const emailExist = await User.findOne({ email: req.body.email });
+  const { firstName, lastName, email, password } = req.body;
+
+  const emailExist = await User.findOne({ email });
   if (emailExist) {
-    return res.status(400).send("Email already Exists");
+    return res.status(400).send("Email already exists");
   }
-  // Create a new user
-  const user = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-  });
+
+  const name = `${firstName} ${lastName}`;
+
   try {
+    const user = new User({
+      name,
+      email,
+      password,
+    });
+
     const savedUser = await user.save();
-    res.status(201).json({success: true, savedUser});
+    res.status(201).json({ success: true, savedUser });
   } catch (err) {
     res.status(400).send(`Error while signing up: ${err}`);
-    next(err)
+    next(err);
   }
 };
 
@@ -39,7 +43,6 @@ exports.signin = async (req, res, next) => {
       return res.status(409).json({ message: "Invalid password" });
     }
     generateToken(user, 200, res);
-    next();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error" });
