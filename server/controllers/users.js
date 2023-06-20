@@ -1,5 +1,6 @@
 const User = require("../model/User");
 
+// GET /user/:id - Get the user details by id
 exports.getUsersById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,7 +72,6 @@ exports.deleteProductFromCart = async (req, res) => {
       res.status(400).json({ success: false, error: err.message });
     }
   };
-  
 
 // GET /user/:id/favorites - Get the favorite products of the user by id
 exports.getUserFavoritesById = async (req, res) => {
@@ -119,9 +119,9 @@ exports.deleteProductFromFavorites = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    user.favorites = user.favorites.filter((item) => item !== productId);
+    user.favorites = user.favorites.filter((item) => item.toString() !== productId);
     await user.save();
-    res.json({ success: true, favorites: user.favorites });
+    res.json({ success: true, message: "Product successfully deleted from favorites" });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
