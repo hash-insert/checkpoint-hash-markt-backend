@@ -55,11 +55,13 @@ const AuthProvider = ({ children }) => {
           email: "User already exists. Please choose a different email.",
         });
       }
+      else{
       setLoggedIn(true);
       localStorage.setItem("loggedIn", true);
       localStorage.setItem("user",JSON.stringify(user));
       setCurrentUser(user);
       console.log("user data saved");
+      }
     } catch (error) {
       {
         setErrors({ signup: error.message });
