@@ -13,7 +13,8 @@ const Signup = () => {
     loggedIn,
     errors,
     setErrors,
-    setIsSubmitting
+    setIsSubmitting,
+    signup
   } = useAuth()
 
   const navigate = useNavigate()
@@ -26,12 +27,16 @@ const Signup = () => {
     setCurrentUser({ ...currentUser, [e.target.name]: e.target.value })
   }
 
-  const handleSignUpSubmit = (e) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault()
     setErrors(validations(currentUser, users)) 
     setIsSubmitting(true)
-    localStorage.setItem('user', JSON.stringify(currentUser))
-    localStorage.setItem('users', JSON.stringify(users))
+    try{
+      await signup(currentUser.firstName,currentUser.email,currentUser.password)
+     }
+     catch(err){
+        console.log(err);
+     }
   }
 
   return (

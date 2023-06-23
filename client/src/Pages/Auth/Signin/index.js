@@ -6,7 +6,7 @@ import { LoginIcon } from '@heroicons/react/outline'
 
 const Signin = () => {
 
-  const { currentUser, login, setCurrentUser, setIsSubmitting, loggedIn } = useAuth()
+  const { currentUser, login, setCurrentUser, setIsSubmitting, loggedIn,loginStatus } = useAuth()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")

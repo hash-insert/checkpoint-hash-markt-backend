@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom"
-
+import { Backsignup , backLogin } from "../services/authService"
 const AuthContext = createContext()
 
 const defaultUser = JSON.parse(localStorage.getItem("user")) || {
@@ -12,26 +12,64 @@ const defaultUser = JSON.parse(localStorage.getItem("user")) || {
   address: "",
 }
 const defaultUsers = JSON.parse(localStorage.getItem("users")) || []
-
 const AuthProvider = ({ children }) => {
-  const [users, setUsers] = useState(defaultUsers)
-  const [currentUser, setCurrentUser] = useState(defaultUser)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [users, setUsers] = useState(defaultUsers);
+  const [currentUser, setCurrentUser] = useState(defaultUser);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const login = (email, password) => {
-    const userData = Object.values(users)
-    const indexOfUser = users.map((item) => item.email).indexOf(email)
-    if (indexOfUser && userData[indexOfUser].password === password) {
-      const finalUser = userData[indexOfUser]
-      setCurrentUser(finalUser)
-      setLoggedIn(true)
-      localStorage.setItem("user", JSON.stringify(finalUser))
+  useEffect(async () => {
+    const status =await  JSON.parse(localStorage.getItem("loggedIn"));
+    const userData = await JSON.parse(localStorage.getItem("user"))
+    console.log(status)
+    console.log(userData)
+    if (status) {
+     setLoggedIn(true)
+     setCurrentUser(userData)
     }
-  }
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      const logIn = await backLogin(email, password);
+      console.log(logIn[0]);
+      setCurrentUser(logIn[0]);
+      setLoggedIn(true);
+      localStorage.setItem("loggedIn", true);
+      localStorage.setItem("user",JSON.stringify(logIn[0]));
+    } catch (error) {
+      if (error.message === "Invalid Credentials") {
+        setErrors({ email: "The entered credentials are wrong please check" });
+      } else {
+        setErrors({ signup: error.message });
+      }
+    }
+  };
+  const signup = async (name, email, password) => {
+    try {
+      const user = await Backsignup(name, email, password);
+      console.log(user);
+      if (user === "Email already exists") {
+        setErrors({
+          email: "User already exists. Please choose a different email.",
+        });
+      }
+      setLoggedIn(true);
+      localStorage.setItem("loggedIn", true);
+      localStorage.setItem("user",JSON.stringify(user));
+      setCurrentUser(user);
+      console.log("user data saved");
+    } catch (error) {
+      {
+        setErrors({ signup: error.message });
+      }
+    }
+  };
+  
 
   const logout = () => {
+    localStorage.removeItem("loggedIn")
     localStorage.removeItem("user")
     setCurrentUser({
       firstName: "",
@@ -70,6 +108,7 @@ const AuthProvider = ({ children }) => {
     setIsSubmitting,
     logout,
     login,
+    signup
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

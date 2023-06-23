@@ -113,7 +113,7 @@ const MenuButton = () => {
                 <div className="text-left">
                   <strong>Hello,</strong>
                 </div>
-                <div>{currentUser?.firstName}</div>
+                <div>{currentUser?.name}</div>
               </div>
               <ChevronDownIcon
                 className={styles.chevronDownIcon}

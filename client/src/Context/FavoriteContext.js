@@ -1,35 +1,54 @@
-import { useState, createContext, useContext, useEffect } from 'react'
+import { useState, createContext, useContext, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import {
+  getFavourite,
+  addFavourite,
+  removeFavourite,
+} from "../services/userService";
+const FavoriteContext = createContext();
 
-const FavoriteContext = createContext()
-
-const defaultFavorite = JSON.parse(localStorage.getItem('favorite')) || []
-
-const FavoriteProvider = ({children}) => {
-
-  const [favoriteItems, setFavoriteItems] = useState(defaultFavorite)
-
-  useEffect(() => {
-    localStorage.setItem('favorite', JSON.stringify(favoriteItems))
-  }, [favoriteItems])
-
-  const addToFavorite = (data, findFavoriteItem) => {
-    if(!findFavoriteItem) {
-      return setFavoriteItems((items) => [data, ...items] )
+const FavoriteProvider = ({ children }) => {
+  const [favoriteItems, setFavoriteItems] = useState([]);
+  const { loggedIn } = useAuth();
+  const getUserID = () => {
+    let userData = JSON.parse(localStorage.getItem("user"));
+    return userData._id;
+  };
+  useEffect(async () => {
+    if (loggedIn) {
+      let userId = getUserID();
+      let favoriteItems = await getFavourite(userId);
+      setFavoriteItems(favoriteItems);
+    } else {
+      setFavoriteItems([]);
     }
+  }, [loggedIn]);
 
-    const filtered = favoriteItems.filter((item) => item.id !== findFavoriteItem.id)
-    setFavoriteItems(filtered)
-  }
+  const addToFavorite = async (data, findFavoriteItem) => {
+    if (!findFavoriteItem) {
+      let userId = getUserID();
+      let addToFavourites = await addFavourite(data, userId);
+      console.log(addToFavourites);
+      setFavoriteItems(addToFavourites);
+    } else {
+      let userId = getUserID();
+      const toBeRemoved = await removeFavourite(data, userId);
+      setFavoriteItems(toBeRemoved);
+    }
+  };
 
   const values = {
     favoriteItems,
     addToFavorite,
-  }
+  };
 
-  return <FavoriteContext.Provider value={values}>{children}</FavoriteContext.Provider>
+  return (
+    <FavoriteContext.Provider value={values}>
+      {children}
+    </FavoriteContext.Provider>
+  );
+};
 
-}
+const useFavorite = () => useContext(FavoriteContext);
 
-const useFavorite = () => useContext(FavoriteContext)
-
-export { FavoriteProvider, useFavorite }
+export { FavoriteProvider, useFavorite };

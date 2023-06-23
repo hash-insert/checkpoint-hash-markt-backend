@@ -9,9 +9,9 @@ exports.signin = async(req, res) => {
     try{
         console.log('in signin')
         const {name,email,password}=req.body;
-        const data=User.findOne({email:email})
+        const data= await User.findOne({email:email})
         if(data){
-            res.send('user already exists')
+            res.send('Email already exists')
         }else{
             const salt=await bcrypt.genSalt(10);
         const hashedPassword=await bcrypt.hash(password,salt);
@@ -43,9 +43,9 @@ exports.signin = async(req, res) => {
 exports.login = async (req, res) => {
 
     try{
-        const {name,password}=req.body;
+        const {email,password}=req.body;
 
-    let verify1=await User.findOne({name:name});
+    let verify1=await User.findOne({email:email});
     if(!verify1){
         res.send('check your details')
         return;
@@ -59,9 +59,11 @@ exports.login = async (req, res) => {
    
     
     if(verify1 && verify2){
-        let jwtToken=jwt.sign({name},process.env.secret);
+        let jwtToken=jwt.sign({email},process.env.secret);
+        let userData = await User.find({email:email})
+        console.log(userData)
         res.cookie("user",jwtToken);
-        res.send(true)
+        res.json(userData)
     }
     
     

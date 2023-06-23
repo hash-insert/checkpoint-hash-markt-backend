@@ -23,12 +23,12 @@ const userSchema = new mongoose.Schema(
       required:true
     },
     favourites:{
-      type:[String],
+      type:[Object],
       required:true
 
     },
     cart_items:{
-      type:[String],
+      type:[Object],
       required:true 
 
     }
