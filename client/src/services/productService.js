@@ -1,5 +1,5 @@
 import axios from "axios";
-const API = "http://localhost:8000";
+const API = "https://hashmarketbackend.onrender.com";
 const getProducts = `${API}/api/products`;
 const getProductByID = `${API}/api/product`;
 

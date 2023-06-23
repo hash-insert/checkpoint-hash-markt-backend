@@ -1,5 +1,5 @@
 import axios from 'axios';
-const URL = 'http://localhost:8000';
+const URL = 'https://hashmarketbackend.onrender.com';
 const Signup = `${URL}/api/auth/signin`
 const login = `${URL}/api/auth/login`
 

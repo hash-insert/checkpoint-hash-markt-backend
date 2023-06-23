@@ -1,5 +1,5 @@
 import axios from 'axios';
-let API = 'http://localhost:8000'
+let API = 'https://hashmarketbackend.onrender.com'
 
 export const getCart = async(id)=>{
     let response = await axios.get(`${API}/api/user/${id}/usercart`)
