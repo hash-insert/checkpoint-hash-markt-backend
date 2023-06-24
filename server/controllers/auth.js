@@ -1,6 +1,6 @@
-const User = require("../model/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import { findOne, create } from "../model/User";
+import { hash, compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 require("dotenv").config();
 
 const signup = async (req, res, next) => {
@@ -12,21 +12,21 @@ const signup = async (req, res, next) => {
       return res.status(401).send("All fields are required");
     }
     //checking for user presence
-    const userExist = await User.findOne({ email });
+    const userExist = await findOne({ email });
     if (userExist) {
       return res.status(400).send("email already exists");
     }
     //encrypting password using bcryptjs
-    const encryptedPassword = await bcrypt.hash(password, 10);
+    const encryptedPassword = await hash(password, 10);
     //creating new user
-    const user = await User.create({
+    const user = await create({
       firstName,
       lastName,
       email,
       password: encryptedPassword,
     });
     //creating and sending token
-    const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
+    const token = sign({ id: user._id, email }, process.env.TOKEN_SECRET);
     user.token = token;
     console.log(user)
     return res.status(201).json({ success: true, user, msg: "signup succesful" });
@@ -45,17 +45,17 @@ const login = async (req, res, next) => {
       return res.status(401).send("All fields are required");
     }
     //existing mail or not
-    const user = await User.findOne({ email });
+    const user = await findOne({ email });
     if (!user) {
       return res.status(404).send("user not found");
     }
     //password checking
-    const validUser = await bcrypt.compare(password, user.password);
+    const validUser = await compare(password, user.password);
     if (!validUser) {
       return res.status(400).send("incorrect password");
     }
     //token generation and sending
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET);
+    const token = sign({ id: user._id }, process.env.TOKEN_SECRET);
     user.token = token;
     return res
       .cookie("access_token", token, {
@@ -75,4 +75,4 @@ const logout = (req, res, next) => {
   res.status(200).json({ success: true, msg: "logout succesful" });
 };
 
-module.exports = { signup, login, logout };
+export default { signup, login, logout };
