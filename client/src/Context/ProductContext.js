@@ -40,6 +40,7 @@ export const ProductProvider = ({ children }) => {
         if (category && category.length > 0) {
           let productsByCategory = await getProductsByCategory(category);
           setProduct(productsByCategory);
+          setCategory("");
           setLoading(false);
         } else {
           let allProducts = await getAllProducts();

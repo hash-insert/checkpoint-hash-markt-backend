@@ -4,7 +4,7 @@ const API_URL = "http://localhost:8000/api/products";
 
 const getAllProducts = async () => {
   try {
-    const allProducts = await axios.get(`${API_URL}/`);
+    const allProducts = await axios.get(`${API_URL}`);
     return allProducts.data;
   } catch (error) {
     console.log("error in product service 1", error);

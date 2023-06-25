@@ -26,9 +26,9 @@ const signup = async (req, res, next) => {
       password: encryptedPassword,
     });
     //creating and sending token
-    const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
-    user.token = token;
-    console.log(user)
+    // const token = jwt.sign({ id: user._id, email }, process.env.TOKEN_SECRET);
+    // user.token = token;
+    // console.log(user)
     return res.status(201).json({ success: true, user, msg: "signup succesful" });
   } catch (error) {
     console.log(error);

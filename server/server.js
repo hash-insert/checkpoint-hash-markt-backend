@@ -5,18 +5,21 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
 const bodyParser = require("body-parser");
-
-// Routes
 const auth = require("./routes/auth");
+const user = require("./routes/users")
+
 app.use(cors({
   origin: "http://localhost:3000", 
   credentials: true,
 }));
 app.use(bodyParser.json());
 app.use(cookieparser());
-
 app.use(express.json());
+
+//Routes
 app.use("/api/auth", auth);
+app.use("/api/user/:id", user)
+
 
 const port = process.env.PORT || 8000;
 

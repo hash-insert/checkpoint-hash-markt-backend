@@ -29,17 +29,7 @@ const AuthProvider = ({ children }) => {
       const user = response.user;
       console.log(JSON.stringify(user));
       localStorage.setItem("user", JSON.stringify(user));
-      function setCookie(name, value, days) {
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + days);
-      
-        const cookieValue = encodeURIComponent(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
-        document.cookie = name + '=' + cookieValue;
-      }
-      
-      // Set the token as a cookie
-      setCookie('access_token', user.token, 7);
-      // setCurrentUser({ user });
+      setCurrentUser({});
       navigate("/signin");
     } catch (error) {
       if (error.message === "Email already exists") {
@@ -56,9 +46,23 @@ const AuthProvider = ({ children }) => {
       setIsSubmitting(true);
       const response = await signin(email, password);
       const userData = response.user;
+      function setCookie(name, value, days) {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + days);
+
+        const cookieValue =
+          encodeURIComponent(value) +
+          "; expires=" +
+          expirationDate.toUTCString() +
+          "; path=/";
+        document.cookie = name + "=" + cookieValue;
+      }
+
+      // Set the token as a cookie
+      setCookie("access_token", userData.token, 7);
       setIsSubmitting(false);
       setLoggedIn(true);
-      setCurrentUser(userData);
+      setCurrentUser({});
       navigate("/");
     } catch (error) {
       console.log("error in handling login:", error);
