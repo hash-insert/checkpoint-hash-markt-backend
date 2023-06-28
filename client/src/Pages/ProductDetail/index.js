@@ -12,10 +12,11 @@ const ProductDetail = () => {
   const { addToFavorite, favoriteItems } = useFavorite();
   const { product, loading, setProductID } = useProduct();
 
-  const findCartItem = items.find((item) => item.id === product.id);
-  const findFavoriteItem = favoriteItems.find((item) => item.id === product.id);
+  const findCartItem = items.find((item) => item._id === product._id);
+  const findFavoriteItem = favoriteItems.find((item) => item._id === product._id);
 
   const { product_id } = useParams();
+  console.log(product_id)
 
   useEffect(() => {
     setProductID(product_id);
@@ -23,7 +24,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      {!loading && product?.id ? (
+      {!loading && product?._id ? (
           <div className="flex flex-wrap max-w-7xl mx-auto my-4">
             <div className="w-full sm:w-2/2 md:w-2/2 xl:w-5/5 p-4 flex flex-wrap">
               <img

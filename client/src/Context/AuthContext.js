@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, logout, signup } from "../services/authServices";
-import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -12,13 +11,12 @@ const AuthProvider = ({ children }) => {
     password: "",
     passwordConfirm: ""
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the user is logged in on component mount
     const checkLoggedIn = () => {
       const storedUser = localStorage.getItem("currentUser");
       if (storedUser) {

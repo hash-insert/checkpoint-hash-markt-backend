@@ -2,7 +2,7 @@ const { Forbidden } = require("./customError");
 const jwt = require("jsonwebtoken");
 
 const authorization = (req, res, next) => {
-  // console.log("authentication start");
+  console.log("authentication start");
   // console.log(req.url);
   const cookie = req.headers.cookie;
   let token = cookie.split("=")[1];

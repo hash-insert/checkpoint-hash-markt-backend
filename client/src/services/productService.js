@@ -19,7 +19,6 @@ const getProductsByCategory = async (category) => {
 const getAllProducts = async () => {
   try {
     const response = await axios.get(`${API_URL}/api/products`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.error);
@@ -28,7 +27,8 @@ const getAllProducts = async () => {
 
 const getProductById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/products/${id}`);
+    const response = await axios.get(`${API_URL}/api/product/${id}`);
+    console.log(response.data)
     return response.data;
   } catch (error) {
     throw new Error(error.response.data.error);

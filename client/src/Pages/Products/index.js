@@ -10,7 +10,6 @@ import Card from "../../Components/Card";
 const Products = () => {
   const {addToCart, items} = useCart()
   const {addToFavorite, favoriteItems} = useFavorite()
-
   const { productList, loading, setProductID, setCategory } = useProduct();
   
   const {category_id} = useParams()
@@ -23,10 +22,10 @@ const Products = () => {
     <div className={styles.cardGroup}>
       {!loading ? (
         productList.data?.map((item, index) => {
-          const findCartItem = items.find((cart_item) => cart_item.id === item.id)
-          const findFavoriteItem = favoriteItems.find((favorite_item) => favorite_item.id === item.id)
+          const findCartItem = items.find((cart_item) => cart_item._id === item._id)
+          const findFavoriteItem = favoriteItems.find((favorite_item) => favorite_item._id === item._id)
           return (
-            <Card key={`product-${index}`} item={item} setProductID={setProductID} findCartItem={findCartItem} findFavoriteItem={findFavoriteItem} addToCart={addToCart} addToFavorite={addToFavorite} />
+            <Card key={`product-${item._id}`} item={item} setProductID={setProductID} findCartItem={findCartItem} findFavoriteItem={findFavoriteItem} addToCart={addToCart} addToFavorite={addToFavorite} />
           );
         })
       ) : (

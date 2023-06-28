@@ -52,10 +52,11 @@ const deleteProductFromCart = async (req, res, next) => {
   const { userId } = req.params;
   const { productId } = req.body;
 
+
   try {
     let user = await User.findOne({ _id: userId });
     let { cart_items } = user;
-    let filter = cart_items.filter((item) => item.id !== productId);
+    let filter = cart_items.filter((item) => item._id.toString() !== productId);
     user.cart_items = filter;
     await user.save();
 
@@ -100,10 +101,11 @@ const addFavoriteProduct = async (req, res, next) => {
 const deleteFavoriteProduct = async (req, res, next) => {
   const { userId } = req.params;
   const { productId } = req.body;
+  
   try {
     let user = await User.findOne({ _id: userId });
     let { favorites } = user;
-    let filter = favorites.filter((item) => item.id !== productId);
+    let filter = favorites.filter((item) => item._id.toString() !== productId);
     user.favorites = filter;
     user.save();
     res.json({ message: filter });

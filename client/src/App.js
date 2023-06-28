@@ -10,6 +10,7 @@ import Container from "./Components/Container";
 import ProductDetail from "./Pages/ProductDetail";
 import Cart from "./Pages/Cart";
 import Favorites from "./Pages/Favorites";
+import Profile from "./Pages/Profile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile/>}/>
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Container>

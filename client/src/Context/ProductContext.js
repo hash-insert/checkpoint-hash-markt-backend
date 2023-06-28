@@ -53,7 +53,7 @@ export const ProductProvider = ({ children }) => {
       try {
         if (productID && productID.length > 0) {
           const productData = await getProductById(productID);
-          setProduct(productData);
+          setProduct(productData.data);
         }
       } catch (error) {
         console.log(error);
